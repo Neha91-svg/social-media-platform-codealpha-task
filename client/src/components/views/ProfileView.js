@@ -1,7 +1,7 @@
 import { Card, Container, Stack, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { getUser, updateUser } from "../../api/users";
+import { getUser, updateUser, followUser, unfollowUser, getFollowers } from "../../api/users";
 import { isLoggedIn } from "../../helpers/authHelper";
 import CommentBrowser from "../CommentBrowser";
 
@@ -24,6 +24,8 @@ const ProfileView = () => {
   const [tab, setTab] = useState("posts");
   const user = isLoggedIn();
   const [error, setError] = useState("");
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +38,27 @@ const ProfileView = () => {
       setError(data.error);
     } else {
       setProfile(data);
+      const followersData = await getFollowers(data.user._id);
+      if (followersData && followersData.data) {
+        setFollowerCount(followersData.data.length);
+        if (user) {
+          const isF = followersData.data.some((f) => f.userId === user.userId);
+          setIsFollowing(isF);
+        }
+      }
     }
+  };
+
+  const handleFollow = async () => {
+    setIsFollowing(true);
+    setFollowerCount(followerCount + 1);
+    await followUser(user.userId, profile.user._id, user.token);
+  };
+
+  const handleUnfollow = async () => {
+    setIsFollowing(false);
+    setFollowerCount(followerCount - 1);
+    await unfollowUser(user.userId, profile.user._id, user.token);
   };
 
   const handleSubmit = async (e) => {
@@ -131,6 +153,10 @@ const ProfileView = () => {
               handleEditing={handleEditing}
               handleMessage={handleMessage}
               validate={validate}
+              isFollowing={isFollowing}
+              handleFollow={handleFollow}
+              handleUnfollow={handleUnfollow}
+              followerCount={followerCount}
             />
 
             <FindUsers />

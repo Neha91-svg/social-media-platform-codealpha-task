@@ -21,6 +21,7 @@ const PostEditor = () => {
 
   const [formData, setFormData] = useState({
     title: "",
+    image: "",
     content: "",
   });
 
@@ -81,6 +82,15 @@ const PostEditor = () => {
             onChange={handleChange}
             error={errors.title !== undefined}
             helperText={errors.title}
+          />
+          <TextField
+            fullWidth
+            label="Image URL (Optional)"
+            name="image"
+            margin="normal"
+            onChange={handleChange}
+            error={errors.image !== undefined}
+            helperText={errors.image}
           />
           <TextField
             fullWidth

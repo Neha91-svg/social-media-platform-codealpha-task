@@ -160,6 +160,16 @@ const PostCard = (props) => {
               {post.title}
             </Typography>
 
+            {post.image && (
+              <Box sx={{ mt: 1, mb: 1, display: "flex", justifyContent: "center" }}>
+                <img
+                  src={post.image}
+                  alt="Post Image"
+                  style={{ maxWidth: "100%", borderRadius: "8px", maxHeight: "400px", objectFit: "cover" }}
+                />
+              </Box>
+            )}
+
             {preview !== "secondary" &&
               (editing ? (
                 <ContentUpdateEditor

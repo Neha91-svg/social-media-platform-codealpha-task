@@ -70,12 +70,26 @@ const Profile = (props) => {
           )}
 
           {currentUser && user._id !== currentUser.userId && (
-            <Button variant="outlined" onClick={props.handleMessage}>
-              Message
-            </Button>
+            <Stack direction="row" spacing={1}>
+              <Button variant="outlined" onClick={props.handleMessage}>
+                Message
+              </Button>
+              {props.isFollowing ? (
+                <Button variant="outlined" onClick={props.handleUnfollow} color="error">
+                  Unfollow
+                </Button>
+              ) : (
+                <Button variant="contained" onClick={props.handleFollow}>
+                  Follow
+                </Button>
+              )}
+            </Stack>
           )}
 
           <HorizontalStack>
+            <Typography color="text.secondary">
+              Followers <b>{props.followerCount !== undefined ? props.followerCount : 0}</b>
+            </Typography>
             <Typography color="text.secondary">
               Likes <b>{props.profile.posts.likeCount}</b>
             </Typography>

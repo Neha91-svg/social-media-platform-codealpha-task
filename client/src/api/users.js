@@ -69,4 +69,47 @@ const updateUser = async (user, data) => {
   }
 };
 
-export { signup, login, getUser, getRandomUsers, updateUser };
+const followUser = async (userId, targetUserId, token) => {
+  try {
+    const res = await fetch(BASE_URL + "api/users/follow/" + targetUserId, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "x-access-token": token,
+      },
+      body: JSON.stringify({ userId }),
+    });
+    return res.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const unfollowUser = async (userId, targetUserId, token) => {
+  try {
+    const res = await fetch(BASE_URL + "api/users/unfollow/" + targetUserId, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "x-access-token": token,
+      },
+      body: JSON.stringify({ userId }),
+    });
+    return res.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getFollowers = async (userId) => {
+  try {
+    const res = await fetch(BASE_URL + "api/users/followers/" + userId);
+    return res.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { signup, login, getUser, getRandomUsers, updateUser, followUser, unfollowUser, getFollowers };
