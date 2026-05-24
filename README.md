@@ -17,12 +17,14 @@ Deployed at: https://mindshare-ethnus.netlify.app/
 - Update bio which can be viewed by other users
 - Search for posts by their title
 - View the users who liked a particular post
+- Follow and unfollow users to customize your social network
+- Attach beautiful images to posts via Image URLs
 - Fully responsive layout
 
 ## Installation and usage
 1) Clone this repository  
 ```
-git clone https://github.com/AbhayGupta01/MindShare.git
+git clone https://github.com/Neha91-svg/social-media-platform-codealpha-task.git
 ```
 2) Install dependencies  
 ```
