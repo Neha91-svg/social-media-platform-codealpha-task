@@ -5,7 +5,8 @@ import "react-icons/md";
 import "react-icons/bs";
 import "react-router-dom";
 import { CssBaseline } from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { getDesignTokens } from "./theme";
 
 import {
   BrowserRouter,
@@ -14,7 +15,10 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import theme from "./theme";
+
+import React, { useState, useMemo, createContext } from "react";
+
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 import PostView from "./components/views/PostView";
 import CreatePostView from "./components/views/CreatePostView";
@@ -33,10 +37,23 @@ import { io } from "socket.io-client";
 function App() {
   initiateSocketConnection();
 
+  const [mode, setMode] = useState("light");
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+      },
+    }),
+    []
+  );
+
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+
   return (
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <CssBaseline />
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <CssBaseline />
         <Routes>
           <Route path="/" element={<ExploreView />} />
           <Route path="/posts/:id" element={<PostView />} />
@@ -63,6 +80,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 

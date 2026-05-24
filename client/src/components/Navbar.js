@@ -9,7 +9,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { ColorModeContext } from "../../App";
+import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 import "react-icons/ai";
 import "react-icons/ri";
 import {
@@ -28,6 +30,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = isLoggedIn();
   const theme = useTheme();
+  const colorMode = useContext(ColorModeContext);
   const username = user && isLoggedIn().username;
   const [search, setSearch] = useState("");
   const [searchIcon, setSearchIcon] = useState(false);
@@ -114,6 +117,10 @@ const Navbar = () => {
               <AiOutlineSearch />
             </IconButton>
           )}
+          
+          <IconButton onClick={colorMode.toggleColorMode}>
+            {theme.palette.mode === "dark" ? <BsFillSunFill /> : <BsFillMoonFill />}
+          </IconButton>
 
           <IconButton component={Link} to={"/"}>
             <AiFillHome />

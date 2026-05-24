@@ -9,6 +9,7 @@ import {
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { AiFillCheckCircle, AiFillEdit, AiFillMessage } from "react-icons/ai";
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { deletePost, likePost, unlikePost, updatePost } from "../api/posts";
 import { isLoggedIn } from "../helpers/authHelper";
@@ -43,6 +44,14 @@ const PostCard = (props) => {
   const [confirm, setConfirm] = useState(false);
   const [post, setPost] = useState(postData);
   const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  React.useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    if (saved.includes(post._id)) {
+      setIsBookmarked(true);
+    }
+  }, [post._id]);
 
   let maxHeight = null;
   if (preview === "primary") {
@@ -88,6 +97,20 @@ const PostCard = (props) => {
     } else {
       setLikeCount(likeCount - 1);
       await unlikePost(post._id, user);
+    }
+  };
+
+  const handleBookmark = (e) => {
+    e.stopPropagation();
+    const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    if (isBookmarked) {
+      const newSaved = saved.filter((id) => id !== post._id);
+      localStorage.setItem("bookmarks", JSON.stringify(newSaved));
+      setIsBookmarked(false);
+    } else {
+      saved.push(post._id);
+      localStorage.setItem("bookmarks", JSON.stringify(saved));
+      setIsBookmarked(true);
     }
   };
 
@@ -187,15 +210,20 @@ const PostCard = (props) => {
               ))}
 
             <HorizontalStack sx={{ mt: 2 }} justifyContent="space-between">
-              <HorizontalStack>
-                <AiFillMessage />
-                <Typography
-                  variant="subtitle2"
-                  color="text.secondary"
-                  sx={{ fontWeight: "bold" }}
-                >
-                  {post.commentCount}
-                </Typography>
+              <HorizontalStack spacing={2}>
+                <HorizontalStack>
+                  <AiFillMessage />
+                  <Typography
+                    variant="subtitle2"
+                    color="text.secondary"
+                    sx={{ fontWeight: "bold" }}
+                  >
+                    {post.commentCount}
+                  </Typography>
+                </HorizontalStack>
+                <IconButton size="small" onClick={handleBookmark}>
+                  {isBookmarked ? <BsBookmarkFill color={iconColor} /> : <BsBookmark />}
+                </IconButton>
               </HorizontalStack>
               <Box>
                 <UserLikePreview
